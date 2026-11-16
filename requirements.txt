@@ -1,0 +1,13 @@
+Flask>=3.0
+Flask-Login>=0.6.3
+pymongo>=4.6
+dnspython>=2.4
+python-dotenv>=1.0
+scikit-learn>=1.3
+pandas>=2.0
+numpy>=1.24
+joblib>=1.3
+plotly>=5.18
+Werkzeug>=3.0
+tzdata>=2024.1
+pytest>=8.0

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge, urgency_badge %}
+{% block title %}All complaints{% endblock %}
+{% block content %}
+<section class="page-heading d-flex flex-wrap justify-content-between align-items-end gap-3"><div><div class="eyebrow">CAMPUS OPERATIONS</div><h1>All complaints</h1><p>{{ total }} reports found across campus.</p></div>
+  <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('admin.export_csv', **qs) }}">Export CSV</a>
+</section>
+<form class="filter-panel" method="get">
+  <div class="row g-2">
+    <div class="col-md-3"><input name="q" class="form-control" placeholder="Search title / description" value="{{ q }}"></div>
+    <div class="col-md-2"><select name="category" class="form-select"><option value="">All categories</option>
+      {% for x in categories %}<option {{ 'selected' if filters.category == x }}>{{ x }}</option>{% endfor %}</select></div>
+    <div class="col-md-2"><select name="urgency" class="form-select"><option value="">All urgencies</option>
+      {% for x in urgencies %}<option {{ 'selected' if filters.urgency == x }}>{{ x }}</option>{% endfor %}</select></div>
+    <div class="col-md-2"><select name="location" class="form-select"><option value="">All locations</option>
+      {% for x in locations %}<option {{ 'selected' if filters.location == x }}>{{ x }}</option>{% endfor %}</select></div>
+    <div class="col-md-2"><select name="status" class="form-select"><option value="">All statuses</option>
+      {% for x in statuses %}<option {{ 'selected' if filters.status == x }}>{{ x }}</option>{% endfor %}</select></div>
+    <div class="col-md-1 d-grid"><button class="btn btn-primary">Filter</button></div>
+  </div>
+</form>
+<div class="admin-table-wrap"><div class="table-responsive">
+  <table class="table table-hover align-middle mb-0">
+    <thead class="table-light"><tr><th>ID</th><th>Title</th><th>Location</th><th>Category</th><th>Urgency</th><th>Status</th><th>Department</th><th>Submitted</th></tr></thead>
+    <tbody>
+    {% for c in rows %}
+      <tr>
+        <td><a href="{{ url_for('admin.complaint_detail', complaint_id=c.complaint_id) }}">{{ c.complaint_id }}</a></td>
+        <td>{{ c.title }}</td><td>{{ c.location }}</td><td>{{ c.predicted_category }}</td>
+        <td>{{ urgency_badge(c.final_urgency) }}</td><td>{{ status_badge(c.status) }}</td>
+        <td class="small">{{ c.assigned_department or '-' }}</td><td class="small text-nowrap">{{ c.created_at|dt }}</td>
+      </tr>
+    {% else %}<tr><td colspan="8" class="text-center text-muted py-4">No complaints match these filters.</td></tr>{% endfor %}
+    </tbody>
+  </table></div></div>
+{% if pages > 1 %}
+<nav class="mt-3"><ul class="pagination justify-content-center">
+  <li class="page-item {{ 'disabled' if page <= 1 }}"><a class="page-link" href="{{ url_for('admin.complaints', page=page-1, **qs) }}">&laquo;</a></li>
+  <li class="page-item disabled"><span class="page-link">Page {{ page }} of {{ pages }}</span></li>
+  <li class="page-item {{ 'disabled' if page >= pages }}"><a class="page-link" href="{{ url_for('admin.complaints', page=page+1, **qs) }}">&raquo;</a></li>
+</ul></nav>
+{% endif %}
+{% endblock %}

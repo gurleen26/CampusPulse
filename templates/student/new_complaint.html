@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}New complaint{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow">STUDENT PORTAL / NEW REPORT</div><h1>Report a campus issue</h1><p>Tell us what happened. We’ll help route it to the right team.</p></section>
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card form-panel">
+      <form method="post" enctype="multipart/form-data" id="complaint-form" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mb-3"><label class="form-label">Title</label>
+          <input name="title" id="f-title" class="form-control" maxlength="120" required value="{{ form.get('title', '') }}"
+                 placeholder="e.g. Wi-Fi not working"></div>
+        <div class="mb-3"><label class="form-label">Description</label>
+          <textarea name="description" id="f-description" class="form-control" rows="5" maxlength="2000" required
+                    placeholder="Describe the problem: what is wrong, since when, who is affected">{{ form.get('description', '') }}</textarea></div>
+        <div class="mb-3"><label class="form-label">Campus location</label>
+          <select name="location" id="f-location" class="form-select" required>
+            <option value="">Choose location...</option>
+            {% for l in locations %}<option {{ 'selected' if form.get('location') == l }}>{{ l }}</option>{% endfor %}
+          </select></div>
+        <div class="mb-3"><label class="form-label">Photo evidence (optional)</label>
+          <input type="file" name="image" class="form-control" accept="image/png,image/jpeg,image/gif,image/webp">
+          <div class="form-text">PNG, JPG, GIF or WEBP, up to 4 MB.</div></div>
+        <button class="btn btn-primary">Submit complaint</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="analysis-panel" id="analysis-box">
+      <h5>Live analysis</h5>
+      <p class="text-muted mb-0" id="analysis-hint">Start describing the problem and the AI prediction will appear here.</p>
+      <div id="analysis-result" class="d-none">
+        <p class="mb-1">Predicted category: <span class="badge bg-info text-dark" id="p-category"></span> <small class="text-muted" id="p-category-conf"></small></p>
+        <p class="mb-3">Predicted urgency: <span class="badge" id="p-urgency"></span> <small class="text-muted" id="p-urgency-conf"></small></p>
+        <div id="similar-box" class="d-none">
+          <div class="alert alert-warning mb-0"><strong>Similar complaints already exist:</strong>
+            <ul class="mb-1 mt-2" id="similar-list"></ul>
+            <small>Your problem may already be reported. You can still submit - administrators will link related complaints.</small></div>
+        </div>
+      </div>
+      <p class="small text-muted mt-3 mb-0">Predictions are advisory. An administrator can change the urgency.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/new_complaint.js') }}"></script>{% endblock %}

@@ -1,0 +1,128 @@
+
+==============================================================================
+CampusPulse - CRUD demo (PyMongo)
+==============================================================================
+
+==============================================================================
+1. CREATE
+==============================================================================
+
+--- insert_one - one complaint (with the ML prediction)
+    mongosh : db.complaints.insertOne({complaint_id:"CMP...", title:"DEMO: Wi-Fi not working", ...})
+    {'inserted': 'CMP1156', 'status': 'Pending', 'category': 'Network'}
+
+--- insert_many - three more complaints in one call
+    mongosh : db.complaints.insertMany([ {...}, {...}, {...} ])
+    {'inserted_count': 3, 'ids': ['CMP1157', 'CMP1158', 'CMP1159']}
+
+==============================================================================
+2. READ
+==============================================================================
+
+--- find_one - by complaint_id (unique index)
+    mongosh : db.complaints.findOne({complaint_id:"CMP1156"})
+    {'complaint_id': 'CMP1156',
+      'student_id': 'USR1011',
+      'student_name': 'Demo CRUD Student',
+      'title': 'DEMO: Wi-Fi not working',
+      'description': 'Wi-Fi is unavailable in the central library',
+      'location': 'Central Library',
+      'predicted_category': 'Network',
+      'category_confidence': 0.93,
+      'predicted_urgency': 'Medium',
+      'urgency_confidence': 0.81,
+      'final_urgency': 'Medium',
+      'urgency_overridden': False,
+      'status': 'Pending',
+      'assigned_department': None,
+      'image_filename': None,
+      'similar_complaints': [],
+      'created_at': datetime.datetime(2026, 11, 15, 12, 55, 33, 244000),
+      'updated_at': datetime.datetime(2026, 11, 15, 12, 55, 33, 244000),
+      'resolved_at': None}
+
+--- find - filter + projection + sort + limit
+    mongosh : db.complaints.find({status:"Pending", final_urgency:"High"}, {complaint_id:1,title:1,location:1,_id:0}).sort({created_at:-1}).limit(5)
+    {'complaint_id': 'CMP1159', 'title': 'DEMO: No water in hostel', 'location': 'Hostel Block A'}
+    {'complaint_id': 'CMP1152',
+      'title': 'Complaint: students fell ill after eating at the mess at Hostel Block...',
+      'location': 'Hostel Block B'}
+    {'complaint_id': 'CMP1149',
+      'title': 'Sir/Madam, the access point is switched off at Hostel Block C, in all...',
+      'location': 'Hostel Block C'}
+    {'complaint_id': 'CMP1146',
+      'title': 'Kindly resolve this issue. Contaminated drinking water has made...',
+      'location': 'Hostel Block C'}
+    {'complaint_id': 'CMP1145',
+      'title': 'Wifi down in central library again, third time this week',
+      'location': 'Central Library'}
+
+--- comparison + logical operators ($in, $gte, $or)
+    mongosh : db.complaints.find({$or:[{final_urgency:"High"},{predicted_category:{$in:["Security","Electricity"]}}], created_at:{$gte: ISODate(<7 days ago>)}})
+    {'matching_documents': 17}
+
+--- regex search on title
+    mongosh : db.complaints.find({title:{$regex:"^DEMO", $options:"i"}}).count()
+    {'count': 4}
+
+--- $text search (uses the text index on title + description)
+    mongosh : db.complaints.find({$text:{$search:"wifi library"}})
+    {'complaint_id': 'CMP1145', 'title': 'Wifi down in central library again, third time this week'}
+    {'complaint_id': 'CMP1140', 'title': 'Internet connection is very slow in the central library today'}
+    {'complaint_id': 'CMP1135', 'title': 'Unable to connect to library internet, connection unavailable'}
+    {'complaint_id': 'CMP1129', 'title': 'Wi-Fi is not working in the central library since morning'}
+
+--- count_documents and distinct
+    mongosh : db.complaints.countDocuments({status:"Pending"}) ; db.complaints.distinct("location")
+    {'pending': 21,
+      'locations_used': ['Academic Block 1', 'Academic Block 2', 'Admin Block', 'Auditorium', 'Cafeteria',
+                         'Central Library', 'Computer Lab', 'Hostel Block A', 'Hostel Block B', 'Hostel Block C',
+                         'Main Gate', 'Parking Area', 'Sports Complex']}
+
+--- query inside an embedded array ($elemMatch on status_history)
+    mongosh : db.complaints.find({status_history:{$elemMatch:{status:"Pending"}}}).count()
+    {'count': 159}
+
+==============================================================================
+3. UPDATE
+==============================================================================
+
+--- update_one - $set the department and $push a status-history entry
+    mongosh : db.complaints.updateOne({complaint_id:"CMP1156"}, {$set:{status:"In Progress", assigned_department:"IT Department"}, $push:{status_history:{...}}})
+    {'status': 'In Progress',
+      'assigned_department': 'IT Department',
+      'status_history': [{'status': 'Pending'}, {'status': 'In Progress'}]}
+
+--- update_many - assign every pending DEMO complaint to a department
+    mongosh : db.complaints.updateMany({title:/^DEMO/, status:"Pending"}, {$set:{assigned_department:"General Administration"}})
+    {'matched': 3, 'modified': 3}
+
+--- find_one_and_update - atomically change and return the new document (admin urgency override)
+    mongosh : db.complaints.findOneAndUpdate({complaint_id:"CMP1156"}, {$set:{final_urgency:"High", urgency_overridden:true}}, {returnDocument:"after"})
+    {'complaint_id': 'CMP1156',
+      'predicted_urgency': 'Medium',
+      'final_urgency': 'High',
+      'urgency_overridden': True}
+
+--- upsert - create the department document if it does not exist
+    mongosh : db.departments.updateOne({department_name:"Demo Dept"}, {$set:{...}}, {upsert:true})
+    {'upserted_id': '6af9abc57c22f2a0c4564ae6'}
+
+--- Auto-increment ids: the counters document is changed with $inc + upsert inside next_id()
+    mongosh : db.counters.findOneAndUpdate({_id:"complaints"}, {$inc:{seq:1}}, {upsert:true, returnDocument:"after"})
+    {'_id': 'complaints', 'seq': 159}
+
+==============================================================================
+4. DELETE
+==============================================================================
+
+--- delete_one
+    mongosh : db.complaints.deleteOne({complaint_id:"CMP1156"})
+    {'deleted': 1}
+
+--- delete_many - remove the remaining DEMO complaints
+    mongosh : db.complaints.deleteMany({title:/^DEMO/})
+    {'deleted': 3}
+    {'demo_department_removed': 1}
+
+CRUD demo finished - demo documents were cleaned up.

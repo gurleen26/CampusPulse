@@ -1,0 +1,41 @@
+complaint_text,category,urgency
+"Cannot open the college portal from my phone, it keeps saying server not reachable",Network,Medium
+"Wifi in hostel block B drops every few minutes while I attend online classes",Network,Medium
+"Internet is totally down across the whole campus, nobody can access anything",Network,High
+"Download speed in the computer lab is painfully slow today",Network,Low
+"LAN cable ports in lab 3 are dead, we cannot submit practical files",Network,Medium
+"Lights in the corridor of hostel block A are flickering at night",Electricity,Low
+"Complete blackout in academic block 2 since the morning, no backup",Electricity,High
+"Sparks and burning smell from the switchboard near my room",Electricity,High
+"The ceiling fan in my classroom does not run",Electricity,Low
+"Sockets near the back benches are not giving power for laptops",Electricity,Medium
+"No water coming in the taps of hostel block C since last night",Water Supply,High
+"The water cooler near the cafeteria gives lukewarm water",Water Supply,Low
+"Tap in the washroom keeps dripping all day",Water Supply,Low
+"Drinking water looks yellow and smells bad, several students have stomach ache",Water Supply,High
+"Water pressure on the third floor is too weak for a proper shower",Water Supply,Low
+"Projector in room 305 shows no display",Classroom Equipment,Medium
+"Mic and speaker are not working in the auditorium before the seminar",Classroom Equipment,Medium
+"Whiteboard markers are finished in room 101",Classroom Equipment,Low
+"Two benches in the second row are broken",Classroom Equipment,Low
+"All computers in the lab fail to boot so the exam cannot start",Classroom Equipment,High
+"My room door lock is jammed and I cannot lock my room",Hostel Maintenance,Medium
+"Window glass in my hostel room is cracked",Hostel Maintenance,Low
+"Roof leaks heavily when it rains and my bed gets soaked",Hostel Maintenance,Medium
+"Lift is stuck between floors with students inside hostel block A",Hostel Maintenance,High
+"Washing machine on the ground floor has been out of order",Hostel Maintenance,Low
+"Dustbin outside the canteen is overflowing and attracting flies",Cleanliness,Low
+"Sewage water is overflowing near the hostel and the smell is unbearable",Cleanliness,High
+"Washrooms on the first floor of academic block 1 are never cleaned",Cleanliness,Medium
+"Garbage was not collected from the sports complex for a week",Cleanliness,Medium
+"Rats seen running inside the mess hall",Cleanliness,Medium
+"Stranger entered the girls hostel and security did not stop him",Security,High
+"CCTV near the parking area is not working",Security,Medium
+"My bicycle was stolen from the parking area",Security,Medium
+"Guard at the main gate is not checking ID cards of visitors",Security,Medium
+"A group of students is threatening a junior near the sports complex",Security,High
+"Fee payment page throws an error when I try to pay",Other,Medium
+"College bus has been coming late every day this week",Other,Low
+"Timetable on the portal is not updated for this semester",Other,Low
+"Need a ramp for wheelchair access at the admin block",Other,Medium
+"ID card has not been issued even after two months",Other,Low

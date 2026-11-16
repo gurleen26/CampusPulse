@@ -1,0 +1,69 @@
+
+==============================================================================
+CampusPulse - validation demo
+==============================================================================
+
+--- The validator is stored with the collection
+    mongosh : db.getCollectionInfos({name:"complaints"})
+   validationLevel : strict | validationAction : error
+   required fields : ['complaint_id', 'student_id', 'title', 'description', 'location', 'predicted_category', 'predicted_urgency', 'final_urgency', 'status', 'status_history', 'created_at']
+   status allowed  : ['Pending', 'In Progress', 'Resolved', 'Rejected']
+   title length    : 5 - 120
+
+==============================================================================
+Invalid complaints (all must be rejected)
+==============================================================================
+
+   Trying: status = "Done" (not in the allowed list)
+   RESULT: REJECTED by MongoDB -> Document failed validation: status violates 'enum'
+
+   Trying: title shorter than 5 characters
+   RESULT: REJECTED by MongoDB -> Document failed validation: title violates 'minLength'
+
+   Trying: location "Moon Base" is not a campus location
+   RESULT: REJECTED by MongoDB -> Document failed validation: location violates 'enum'
+
+   Trying: category "Food" is not allowed
+   RESULT: REJECTED by MongoDB -> Document failed validation: predicted_category violates 'enum'
+
+   Trying: created_at is a string instead of a date
+   RESULT: REJECTED by MongoDB -> Document failed validation: created_at violates 'bsonType'
+
+   Trying: complaint_id does not match ^CMP[0-9]+$
+   RESULT: REJECTED by MongoDB -> Document failed validation: complaint_id violates 'pattern'
+
+   Trying: required field 'description' is missing
+   RESULT: REJECTED by MongoDB -> Document failed validation: missing required field: description
+
+==============================================================================
+Invalid users / feedback / unique indexes
+==============================================================================
+
+   Trying: invalid e-mail address
+   RESULT: REJECTED by MongoDB -> Document failed validation: email violates 'pattern'
+
+   Trying: role "superuser" is not student/admin
+   RESULT: REJECTED by MongoDB -> Document failed validation: role violates 'enum'
+
+   Trying: rating 9 (allowed range is 1-5)
+   RESULT: REJECTED by MongoDB -> Document failed validation: rating violates 'maximum'
+
+   Trying: duplicate e-mail (unique index)
+   RESULT: REJECTED by MongoDB -> E11000 duplicate key error collection: campuspulse.users index: uniq_email dup key: { email: "admin@campuspulse.local" }: 
+
+==============================================================================
+A valid complaint is accepted
+==============================================================================
+   RESULT: inserted -> CMP9000001
+   (demo document removed again)
+
+--- Indexes on the complaints collection
+    mongosh : db.complaints.getIndexes()
+    _id_               keys=[('_id', 1)]  unique=False
+    uniq_complaint_id  keys=[('complaint_id', 1)]  unique=True
+    status_created     keys=[('status', 1), ('created_at', -1)]  unique=False
+    category_location  keys=[('predicted_category', 1), ('location', 1)]  unique=False
+    student_created    keys=[('student_id', 1), ('created_at', -1)]  unique=False
+    created_desc       keys=[('created_at', -1)]  unique=False
+    dept_status        keys=[('assigned_department', 1), ('status', 1)]  unique=False
+    text_search        keys=[('_fts', 'text'), ('_ftsx', 1)]  unique=False

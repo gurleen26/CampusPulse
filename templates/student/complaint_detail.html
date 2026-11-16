@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge, urgency_badge %}
+{% block title %}{{ c.complaint_id }}{% endblock %}
+{% block content %}
+<a href="{{ url_for('student.dashboard') }}" class="small">&larr; Back to my complaints</a>
+<div class="row g-4 mt-1">
+  <div class="col-lg-8">
+    <div class="card detail-panel">
+      <div class="d-flex justify-content-between">
+        <h1 class="detail-title">{{ c.title }}</h1><div>{{ status_badge(c.status) }}</div>
+      </div>
+      <p class="text-muted small mb-2">{{ c.complaint_id }} &middot; {{ c.location }} &middot; submitted {{ c.created_at|dt }}</p>
+      <p>{{ c.description }}</p>
+      {% if c.image_filename %}<img class="evidence mb-3" src="{{ url_for('files.uploaded_file', filename=c.image_filename) }}" alt="Evidence photo">{% endif %}
+      <div class="row text-center g-2">
+        <div class="col-md-4"><div class="info-tile"><div class="small text-muted">Category (ML)</div><strong>{{ c.predicted_category }}</strong></div></div>
+        <div class="col-md-4"><div class="info-tile"><div class="small text-muted">Urgency</div>{{ urgency_badge(c.final_urgency) }}
+          {% if c.urgency_overridden %}<div class="small text-muted">changed by admin</div>{% endif %}</div></div>
+        <div class="col-md-4"><div class="info-tile"><div class="small text-muted">Department</div><strong>{{ c.assigned_department or 'Not assigned yet' }}</strong></div></div>
+      </div>
+    </div>
+
+    {% if c.status == 'Resolved' %}
+    <div class="card detail-panel mt-3">
+      <h5>Your feedback</h5>
+      {% if feedback %}
+        <p class="mb-1">Rating: <strong>{{ feedback.rating }}/5</strong></p>
+        <p class="text-muted mb-0">{{ feedback.feedback or 'No comment.' }}</p>
+      {% else %}
+        <form method="post" action="{{ url_for('student.submit_feedback', complaint_id=c.complaint_id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="mb-2"><label class="form-label">How satisfied are you with the resolution?</label>
+            <select name="rating" class="form-select w-auto" required>
+              <option value="">Rate...</option>
+              {% for r in [5,4,3,2,1] %}<option value="{{ r }}">{{ r }} - {{ ['','Very poor','Poor','OK','Good','Excellent'][r] }}</option>{% endfor %}
+            </select></div>
+          <div class="mb-2"><textarea name="feedback" class="form-control" rows="2" maxlength="500" placeholder="Optional comment"></textarea></div>
+          <button class="btn btn-success btn-sm">Submit feedback</button>
+        </form>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card detail-panel mb-3">
+      <h5>Status history</h5>
+      <ul class="timeline mb-0">
+        {% for h in c.status_history|reverse %}
+        <li>{{ status_badge(h.status) }} <div class="small text-muted">{{ h.updated_at|dt }}</div>
+          {% if h.note %}<div class="small">{{ h.note }}</div>{% endif %}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% if similar %}
+    <div class="card detail-panel">
+      <h6>Possibly related complaints</h6>
+      <ul class="small mb-0">{% for s in similar %}<li>{{ s.complaint_id }} - {{ s.title }} ({{ s.status }})</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

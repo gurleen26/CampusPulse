@@ -1,0 +1,2 @@
+{% macro status_badge(s) -%}<span class="badge bg-{{ STATUS_BADGE.get(s, 'secondary') }}">{{ s }}</span>{%- endmacro %}
+{% macro urgency_badge(u) -%}<span class="badge bg-{{ URGENCY_BADGE.get(u, 'secondary') }}">{{ u }}</span>{%- endmacro %}
