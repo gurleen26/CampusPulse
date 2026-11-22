@@ -11,3 +11,4 @@ plotly>=5.18
 Werkzeug>=3.0
 tzdata>=2024.1
 pytest>=8.0
+gunicorn>=22.0.0

@@ -1,0 +1,203 @@
+{
+  "target": "category",
+  "rows_used": 1798,
+  "duplicates_removed": 2,
+  "train_size": 1438,
+  "test_size": 360,
+  "class_counts": {
+    "Electricity": 259,
+    "Classroom Equipment": 237,
+    "Cleanliness": 235,
+    "Network": 226,
+    "Hostel Maintenance": 225,
+    "Security": 223,
+    "Water Supply": 219,
+    "Other": 174
+  },
+  "accuracy": 1.0,
+  "macro_f1": 1.0,
+  "report": {
+    "Network": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 45.0
+    },
+    "Electricity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 52.0
+    },
+    "Water Supply": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 44.0
+    },
+    "Classroom Equipment": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 47.0
+    },
+    "Hostel Maintenance": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 45.0
+    },
+    "Cleanliness": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 47.0
+    },
+    "Security": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 45.0
+    },
+    "Other": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 35.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 360.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 360.0
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "Network",
+      "Electricity",
+      "Water Supply",
+      "Classroom Equipment",
+      "Hostel Maintenance",
+      "Cleanliness",
+      "Security",
+      "Other"
+    ],
+    "matrix": [
+      [
+        45,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        52,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        44,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        47,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        45,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        47,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        45,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        35
+      ]
+    ]
+  },
+  "baseline_macro_f1": {
+    "most_frequent": 0.0316,
+    "naive_bayes": 0.9944,
+    "logistic_regression": 1.0
+  },
+  "manual_test": {
+    "size": 40,
+    "accuracy": 0.925,
+    "macro_f1": 0.9236,
+    "wrong_examples": [
+      {
+        "text": "Complete blackout in academic block 2 since the morning, no backup",
+        "true": "Electricity",
+        "predicted": "Classroom Equipment"
+      },
+      {
+        "text": "The ceiling fan in my classroom does not run",
+        "true": "Electricity",
+        "predicted": "Classroom Equipment"
+      },
+      {
+        "text": "CCTV near the parking area is not working",
+        "true": "Security",
+        "predicted": "Electricity"
+      }
+    ]
+  }
+}

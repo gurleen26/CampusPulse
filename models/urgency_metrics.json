@@ -1,0 +1,124 @@
+{
+  "target": "urgency",
+  "rows_used": 1798,
+  "duplicates_removed": 2,
+  "train_size": 1438,
+  "test_size": 360,
+  "class_counts": {
+    "Medium": 686,
+    "High": 611,
+    "Low": 501
+  },
+  "accuracy": 0.8472,
+  "macro_f1": 0.853,
+  "report": {
+    "Low": {
+      "precision": 0.8981481481481481,
+      "recall": 0.97,
+      "f1-score": 0.9326923076923077,
+      "support": 100.0
+    },
+    "Medium": {
+      "precision": 0.8181818181818182,
+      "recall": 0.782608695652174,
+      "f1-score": 0.8,
+      "support": 138.0
+    },
+    "High": {
+      "precision": 0.8333333333333334,
+      "recall": 0.819672131147541,
+      "f1-score": 0.8264462809917356,
+      "support": 122.0
+    },
+    "accuracy": 0.8472222222222222,
+    "macro avg": {
+      "precision": 0.8498877665544332,
+      "recall": 0.8574269422665717,
+      "f1-score": 0.8530461962280144,
+      "support": 360.0
+    },
+    "weighted avg": {
+      "precision": 0.84552936775159,
+      "recall": 0.8472222222222222,
+      "f1-score": 0.845821325139507,
+      "support": 360.0
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "Low",
+      "Medium",
+      "High"
+    ],
+    "matrix": [
+      [
+        97,
+        3,
+        0
+      ],
+      [
+        10,
+        108,
+        20
+      ],
+      [
+        1,
+        21,
+        100
+      ]
+    ]
+  },
+  "baseline_macro_f1": {
+    "most_frequent": 0.1847,
+    "naive_bayes": 0.7708,
+    "logistic_regression": 0.853
+  },
+  "manual_test": {
+    "size": 40,
+    "accuracy": 0.8,
+    "macro_f1": 0.8047,
+    "wrong_examples": [
+      {
+        "text": "Wifi in hostel block B drops every few minutes while I attend online classes",
+        "true": "Medium",
+        "predicted": "Low"
+      },
+      {
+        "text": "Complete blackout in academic block 2 since the morning, no backup",
+        "true": "High",
+        "predicted": "Medium"
+      },
+      {
+        "text": "No water coming in the taps of hostel block C since last night",
+        "true": "High",
+        "predicted": "Medium"
+      },
+      {
+        "text": "Tap in the washroom keeps dripping all day",
+        "true": "Low",
+        "predicted": "Medium"
+      },
+      {
+        "text": "Projector in room 305 shows no display",
+        "true": "Medium",
+        "predicted": "High"
+      },
+      {
+        "text": "Mic and speaker are not working in the auditorium before the seminar",
+        "true": "Medium",
+        "predicted": "Low"
+      },
+      {
+        "text": "Washrooms on the first floor of academic block 1 are never cleaned",
+        "true": "Medium",
+        "predicted": "Low"
+      },
+      {
+        "text": "Garbage was not collected from the sports complex for a week",
+        "true": "Medium",
+        "predicted": "Low"
+      }
+    ],
+    "high_recall": 0.8
+  }
+}

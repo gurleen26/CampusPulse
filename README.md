@@ -8,6 +8,7 @@ Built for CSE494 *Intelligent NoSQL Databases* - CA2 (validation, CRUD, aggregat
 
 **You need:** Python 3.10+ (3.11 recommended) and a MongoDB (pick ONE):
 
+
 | Option | Steps |
 |---|---|
 | **A. Local MongoDB (easiest)** | Install *MongoDB Community Server* from mongodb.com/try/download/community (Windows: tick "Install as a Service"). Nothing else to configure. |

@@ -1,9 +1,27 @@
+# Environment variables and secrets
 .env
-venv/
+.env.*
+
+!.env.example
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Generated files
 .pytest_cache/
-models/*.pkl
-models/*.json
+
+# Uploaded user files
 uploads/*
 !uploads/.gitkeep
+
+# Temporary admin utilities
+update_admin.py
+verify_admin.py

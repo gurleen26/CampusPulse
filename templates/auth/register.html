@@ -1,22 +1,47 @@
 {% extends "base.html" %}
-{% block title %}Register{% endblock %}
+{% block title %}Create account{% endblock %}
 {% block content %}
-<div class="auth-shell"><div class="card auth-card">
-    <div class="auth-icon"><i class="bi bi-person-plus"></i></div><div class="eyebrow">CAMPUSPULSE ACCOUNT</div><h1 class="mb-2">Create your account</h1><p class="text-muted small mb-4">Join CampusPulse and help make your campus better.</p>
-    <form method="post" novalidate>
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <div class="mb-3"><label class="form-label">Full name</label>
-        <input name="name" class="form-control" value="{{ name or '' }}" required minlength="2" maxlength="80"></div>
-      <div class="mb-3"><label class="form-label">E-mail</label>
-        <input type="email" name="email" class="form-control" value="{{ email or '' }}" required></div>
-      <div class="row">
-        <div class="col-md-6 mb-3"><label class="form-label">Password</label>
-          <input type="password" name="password" class="form-control" required minlength="8">
-          <div class="form-text">At least 8 characters, with letters and numbers.</div></div>
-        <div class="col-md-6 mb-3"><label class="form-label">Confirm password</label>
-          <input type="password" name="confirm" class="form-control" required></div>
+<section class="auth-experience auth-register">
+  <aside class="auth-story">
+    <div class="auth-story-inner">
+      <div class="auth-story-kicker"><span class="auth-live-dot"></span> YOUR CAMPUS. BETTER, TOGETHER.</div>
+      <div class="auth-story-mark"><i class="bi bi-lightning-charge-fill"></i></div>
+      <h1>Your voice<br><span>can make</span><br>a difference.</h1>
+      <p class="auth-story-copy">Create your CampusPulse account and help make campus services more responsive, transparent and student-focused.</p>
+      <div class="auth-benefits">
+        <div><span class="auth-benefit-icon"><i class="bi bi-send-check"></i></span><span><strong>Report in a few steps</strong><small>Describe an issue and add its campus location</small></span></div>
+        <div><span class="auth-benefit-icon"><i class="bi bi-stars"></i></span><span><strong>Get intelligent assistance</strong><small>See ML-assisted complaint insights</small></span></div>
+        <div><span class="auth-benefit-icon"><i class="bi bi-clipboard2-check"></i></span><span><strong>Stay in the loop</strong><small>Track updates and share feedback</small></span></div>
       </div>
-      <button class="btn btn-primary w-100">Create account</button>
-    </form>
-  </div></div>
+      <div class="auth-story-foot"><i class="bi bi-people"></i> Better campus experiences start with being heard.</div>
+    </div>
+    <div class="auth-orbit auth-orbit-one"></div><div class="auth-orbit auth-orbit-two"></div>
+  </aside>
+  <div class="auth-form-side">
+    <div class="auth-form-wrap">
+      <div class="auth-mobile-brand"><span class="brand-mark"><i class="bi bi-lightning-charge-fill"></i></span> Campus<span>Pulse</span></div>
+      <div class="auth-form-topline"><span class="auth-form-icon"><i class="bi bi-person-plus"></i></span><span class="auth-secure-label"><i class="bi bi-shield-check"></i> STUDENT REGISTRATION</span></div>
+      <div class="eyebrow">GET STARTED WITH CAMPUSPULSE</div>
+      <h2>Create your account.</h2>
+      <p class="auth-form-intro">A few details are all you need to start reporting and tracking campus issues.</p>
+      <form method="post" novalidate class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mb-3"><label class="form-label" for="register-name">Full name</label>
+          <div class="auth-input-wrap"><i class="bi bi-person"></i><input id="register-name" name="name" class="form-control" value="{{ name or '' }}" placeholder="Enter your full name" autocomplete="name" required minlength="2" maxlength="80"></div></div>
+        <div class="mb-3"><label class="form-label" for="register-email">Email address</label>
+          <div class="auth-input-wrap"><i class="bi bi-envelope"></i><input id="register-email" type="email" name="email" class="form-control" value="{{ email or '' }}" placeholder="you@university.edu" autocomplete="email" required></div></div>
+        <div class="row g-3">
+          <div class="col-md-6 mb-2"><label class="form-label" for="register-password">Password</label>
+            <div class="auth-input-wrap"><i class="bi bi-key"></i><input id="register-password" type="password" name="password" class="form-control" placeholder="At least 8 characters" autocomplete="new-password" required minlength="8"></div>
+            <div class="form-text">Use at least 8 characters with letters and numbers.</div></div>
+          <div class="col-md-6 mb-2"><label class="form-label" for="register-confirm">Confirm password</label>
+            <div class="auth-input-wrap"><i class="bi bi-check2-circle"></i><input id="register-confirm" type="password" name="confirm" class="form-control" placeholder="Re-enter password" autocomplete="new-password" required></div></div>
+        </div>
+        <button class="btn btn-primary auth-submit" type="submit">Create student account <i class="bi bi-arrow-right"></i></button>
+      </form>
+      <div class="auth-form-bottom"><span>Already have an account?</span><a href="{{ url_for('auth.login') }}">Log in <i class="bi bi-arrow-up-right"></i></a></div>
+      <div class="auth-role-note"><i class="bi bi-shield-lock"></i><span>Your account is for student access. Administrator accounts are created separately.</span></div>
+    </div>
+  </div>
+</section>
 {% endblock %}
