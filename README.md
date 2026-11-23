@@ -1,80 +1,264 @@
-# CampusPulse - Smart Campus Complaint & Issue Management System
+# CampusPulse – Smart Campus Complaint & Issue Management System
 
-Flask + **MongoDB (PyMongo)** + scikit-learn. Students submit campus complaints; machine learning predicts the
-**category** and **urgency**, warns about **similar complaints**, and admins manage everything from an analytics dashboard.
-Built for CSE494 *Intelligent NoSQL Databases* - CA2 (validation, CRUD, aggregation, PyMongo).
+CampusPulse is a web-based complaint management system designed to simplify how students report campus issues and how administrators track, assign, and resolve them.
 
-## 1. Run it on your laptop
+The application uses Machine Learning to automatically classify complaints and estimate their urgency, helping administrators prioritize issues more efficiently. It also identifies potentially similar complaints and provides an analytics dashboard for monitoring complaint trends and department performance.
 
-**You need:** Python 3.10+ (3.11 recommended) and a MongoDB (pick ONE):
+## Live Application
 
+**Live Demo:** https://campuspulse-yk8j.onrender.com
 
-| Option | Steps |
+**GitHub Repository:** https://github.com/gurleen26/CampusPulse
+
+## Key Features
+
+### Student Module
+- Student registration and secure login.
+- Submit complaints with descriptions, categories, locations, and optional images.
+- Automatic complaint category prediction using Machine Learning.
+- Automatic urgency estimation (Low, Medium, High).
+- Live complaint analysis before submission.
+- Similar complaint detection to identify potentially duplicate issues.
+- Track complaint status and resolution progress.
+- Submit feedback after complaint resolution.
+
+### Admin Module
+- Secure administrator login.
+- View and manage submitted complaints.
+- Assign complaints to relevant departments.
+- Update complaint statuses.
+- Manually override predicted urgency when necessary.
+- View complaint statistics and trends through an analytics dashboard.
+- Export complaint records to CSV.
+
+### Machine Learning
+- TF-IDF-based text feature extraction.
+- Logistic Regression classifiers for category and urgency prediction.
+- Prediction confidence scores.
+- Similarity detection using TF-IDF and cosine similarity.
+- Model evaluation using accuracy, precision, recall, and F1-score.
+
+## Technology Stack
+
+| Component | Technologies |
 |---|---|
-| **A. Local MongoDB (easiest)** | Install *MongoDB Community Server* from mongodb.com/try/download/community (Windows: tick "Install as a Service"). Nothing else to configure. |
-| **B. MongoDB Atlas** | Create a free cluster, add a database user, allow your IP under *Network Access*, copy the connection string, and put it in `.env` as `MONGO_URI=mongodb+srv://...` |
+| Backend | Python, Flask |
+| Database | MongoDB Atlas, PyMongo |
+| Machine Learning | Scikit-learn, TF-IDF, Logistic Regression |
+| Data Processing | Pandas, NumPy |
+| Visualization | Plotly |
+| Frontend | HTML, CSS, JavaScript, Bootstrap |
+| Authentication | Flask-Login, Werkzeug |
+| Deployment | Render, Gunicorn |
+| Version Control | Git, GitHub |
 
-**Windows:** extract the zip, double-click `setup.bat` (once), then `run.bat`.
-**Linux/macOS:** `./setup.sh` then `./run.sh`.
-**Or manually (VS Code terminal):**
+## Application Workflow
+
+1. A student registers and logs into the application.
+2. The student enters a complaint describing the campus issue.
+3. The ML module processes the complaint text and predicts its category and urgency.
+4. The system checks for potentially similar existing complaints.
+5. The student submits the complaint, which is stored in MongoDB.
+6. The administrator reviews the complaint, assigns it to a department, and updates its status.
+7. Students can track progress, while administrators monitor overall performance through analytics.
+
+## Machine Learning Approach
+
+CampusPulse uses two independent classification models:
+
+- **Category Classification:** Predicts the appropriate complaint category.
+- **Urgency Classification:** Estimates whether a complaint should be treated as Low, Medium, or High priority.
+
+### Model Training
+- Text preprocessing and cleaning.
+- TF-IDF vectorization with unigrams and bigrams.
+- Logistic Regression classification.
+- Stratified train-test split.
+- Comparison against baseline classifiers.
+- Evaluation using accuracy, macro F1-score, precision, and recall.
+
+### Urgency Model Evaluation
+
+| Metric | Result |
+|---|---:|
+| Dataset size | 1,798 |
+| Training samples | 1,438 |
+| Testing samples | 360 |
+| Accuracy | 84.72% |
+| Macro F1-score | 85.30% |
+
+The model was also evaluated using a separate set of 40 manually written test examples, achieving 80% accuracy.
+
+*Note: The dataset contains synthetic complaint examples. These evaluation results should be interpreted in that context and may not represent performance on real-world campus complaints.*
+
+## Database Design
+
+CampusPulse uses MongoDB as its primary database.
+
+The application maintains the following collections:
+
+| Collection | Purpose |
+|---|---|
+| `users` | Stores student and administrator information |
+| `complaints` | Stores complaint details, predictions, assignments, and status updates |
+| `departments` | Stores department information |
+| `feedback` | Stores student feedback |
+| `counters` | Supports sequential ID generation |
+
+MongoDB schema validation and indexes are used to improve data consistency and query performance.
+
+## Project Structure
+
+```text
+CampusPulse/
+│
+├── app.py
+├── config.py
+├── wsgi.py
+├── requirements.txt
+├── .env.example
+│
+├── database/
+│   ├── mongodb.py
+│   ├── repository.py
+│   ├── schemas.py
+│   └── aggregations.py
+│
+├── ml/
+│   ├── preprocess.py
+│   ├── trainer.py
+│   ├── predict.py
+│   └── similarity.py
+│
+├── models/
+│   ├── category_model.pkl
+│   ├── category_vectorizer.pkl
+│   ├── urgency_model.pkl
+│   └── urgency_vectorizer.pkl
+│
+├── routes/
+│   ├── auth.py
+│   ├── student.py
+│   ├── admin.py
+│   └── files.py
+│
+├── templates/
+├── static/
+├── data/
+├── scripts/
+├── tests/
+└── docs/
+```
+
+## Running Locally
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/gurleen26/CampusPulse.git
+cd CampusPulse
+```
+
+### 2. Create a virtual environment
+
 ```bash
 python -m venv venv
-venv\Scripts\activate            # Linux/macOS: source venv/bin/activate
-pip install -r requirements.txt
-python -m scripts.seed_demo      # optional: loads ~155 demo complaints so the dashboard is not empty
-python app.py                    # open http://127.0.0.1:5000
 ```
-On first start the app creates the database, validated collections, indexes, departments and the admin account,
-and trains the ML models automatically (a few seconds).
 
-**Logins**
+Activate it:
 
-| Role | E-mail | Password |
-|---|---|---|
-| Admin | `admin@campuspulse.local` | `Admin@123` (change in `.env`) |
-| Demo student (after seeding) | `student1@example.com` ... `student8@example.com` | `Student@123` |
+**Windows**
+```bash
+venv\Scripts\activate
+```
 
-The browser needs internet access (Bootstrap and Plotly load from a CDN).
+**Linux/macOS**
+```bash
+source venv/bin/activate
+```
 
-## 2. Scripts for the CA2 demo / viva
+### 3. Install dependencies
 
 ```bash
-python -m scripts.demo_validation     # $jsonSchema validator + rejected invalid inserts
-python -m scripts.demo_crud           # insert/find/update/delete with PyMongo (cleans up after itself)
-python -m scripts.demo_aggregations   # all 12 pipelines, their output, and index usage (explain)
-python -m scripts.export_mongosh      # regenerates docs/mongosh_queries.js (mongosh / Compass syntax)
-python -m ml.train_category           # retrain + print metrics (confusion matrix, baselines)
-python -m ml.train_urgency
-python -m pytest -q                   # 27 tests (uses a separate database: campuspulse_test)
-```
-`docs/sample_output/` holds example output of the three demo scripts - **run them yourself** and take your own screenshots.
-
-## 3. CA2 requirement -> where to find it
-
-| Requirement | Where |
-|---|---|
-| Document structure design | `database/schemas.py`, `docs/REPORT.md` section 3 (embedded `status_history`, referenced `student_id`, denormalised `student_name`) |
-| Validation rules | `database/schemas.py` (`$jsonSchema`: required, types, enum, pattern, min/max length, range), unique + compound + text indexes in `database/mongodb.py` |
-| CRUD | `database/repository.py` (used by the web app) and `scripts/demo_crud.py` |
-| Aggregation | `database/aggregations.py` - 12 pipelines (`$group`, `$match`, `$lookup`, `$facet`, `$bucket`, `$filter`, `$dateToString`, ...) |
-| PyMongo | `database/mongodb.py` (connection, `create_collection`/`collMod`, `create_index`, atomic counters), `repository.py`, `aggregations.py` |
-| Report | `docs/REPORT.md` (adapt it to your own words before submitting) |
-
-## 4. Project layout
-```
-app.py  config.py  analytics.py  utils.py  requirements.txt  .env
-data/      generate_dataset.py, raw/complaints.csv (1,800 synthetic rows), raw/manual_test.csv (40 hand-written)
-ml/        preprocess.py, trainer.py, train_category.py, train_urgency.py, predict.py, similarity.py
-database/  mongodb.py (connection/validators/indexes/seed), schemas.py, repository.py, aggregations.py
-routes/    auth.py, student.py, admin.py, files.py
-templates/ static/ uploads/ models/ scripts/ tests/ docs/
+pip install -r requirements.txt
 ```
 
-## 5. Honest notes
-* The training data is **synthetic** (generated from templates by `data/generate_dataset.py`), so the held-out scores
-  are optimistic. The more honest figure is the score on the 40 hand-written complaints (see `docs/REPORT.md`).
-  Real complaints would improve and properly test the models.
-* Urgency prediction is advisory; admins can override it (`final_urgency` vs `predicted_urgency` are stored separately).
-* Similarity compares only complaints from the same location and uses TF-IDF, so it matches shared words, not meaning.
-* `nltk` from the blueprint was not used (a small built-in stop-word list avoids extra downloads).
-* This is a development server (`app.run`); it is meant for demo, not production hosting.
+### 4. Configure environment variables
+
+Create a `.env` file in the project root using `.env.example` as a reference.
+
+Configure the required values:
+
+```env
+SECRET_KEY=your-secret-key
+MONGO_URI=your-mongodb-connection-string
+MONGO_DB_NAME=campuspulse
+FLASK_DEBUG=1
+```
+
+Add administrator configuration values if required by the application's initialization process.
+
+**Important:** Never commit your `.env` file, database credentials, or secret keys to GitHub.
+
+### 5. Initialize the database
+
+Run the database initialization command used by the application:
+
+```bash
+python -c "from database.mongodb import init_db; init_db()"
+```
+
+### 6. Start the application
+
+```bash
+python app.py
+```
+
+Open the application at:
+
+```text
+http://127.0.0.1:5000
+```
+
+## Deployment
+
+The application is deployed on **Render**, with MongoDB Atlas used as the cloud database.
+
+- **Hosting:** Render
+- **Database:** MongoDB Atlas
+- **Application Server:** Gunicorn
+- **Entry Point:** `wsgi.py`
+
+Render configuration:
+
+**Build Command**
+```bash
+pip install -r requirements.txt
+```
+
+**Start Command**
+```bash
+gunicorn wsgi:app --bind 0.0.0.0:$PORT
+```
+
+Configure the required environment variables in the Render dashboard rather than hardcoding credentials in the source code.
+
+## Limitations
+
+- The ML models are trained on synthetic complaint data, so real-world performance requires further validation.
+- Predicted urgency is advisory; administrators can review and override it.
+- Similarity detection identifies textually similar complaints and does not guarantee that two complaints describe the same issue.
+- Uploaded files require persistent storage or external object storage to survive application restarts and redeployments on ephemeral hosting environments.
+
+## Future Enhancements
+
+- Train and evaluate models using real campus complaint data.
+- Introduce notification and email alert functionality.
+- Improve duplicate complaint detection using semantic embeddings.
+- Add role-based department access.
+- Integrate persistent cloud storage for uploaded images.
+- Improve ML performance through larger and more diverse datasets.
+
+## Author
+
+Developed as a full-stack application combining web development, NoSQL database design, and Machine Learning to address campus issue management.
